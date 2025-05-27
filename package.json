@@ -1,0 +1,31 @@
+{
+  "name": "fswd5",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "json:server": "json-server --watch db.json"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  },
+  "description": "fake api json",
+  "main": "index.js",
+  "dependencies": {
+    "esbuild": "^0.25.5",
+    "fdir": "^6.4.4",
+    "json-server": "^1.0.0-beta.3",
+    "nanoid": "^3.3.11",
+    "picocolors": "^1.1.1",
+    "picomatch": "^4.0.2",
+    "postcss": "^8.5.3",
+    "rollup": "^4.41.1",
+    "source-map-js": "^1.2.1",
+    "tinyglobby": "^0.2.14"
+  },
+  "author": "",
+  "license": "ISC"
+}
