@@ -1,254 +1,182 @@
-// src/services/api.js
-const API_BASE = '/api'
+// API service for communicating with JSON Server
+const API_BASE_URL = 'http://localhost:3000'
 
-// Verify user authentication from localStorage
-async function authenticate(userId) {
-    const userData = localStorage.getItem('user')
-    if (!userData) {
-        throw new Error('User not authenticated')
-    }
-    if (userId && JSON.parse(userData).id !== userId) {
-        throw new Error('User ID mismatch')
-    }
-}
-
-// Helper function to handle response errors
-async function handleResponse(response) {
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return response.json()
-}
-
-// ==== USER OPERATIONS ====
-export async function fetchUsers() {
-    const response = await fetch(`${API_BASE}/users`)
-    return handleResponse(response)
-}
-
-export async function fetchUsersByUsername(username) {
-    const encodedUsername = encodeURIComponent(username) // Handle special chars
-    const response = await fetch(`${API_BASE}/users?username=${encodedUsername}`)
-    return handleResponse(response)
-}
-
-export async function createUser(username, password) {
-    const response = await fetch(`${API_BASE}/users`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    })
-    return handleResponse(response)
-}
-
-export async function updateUser(id, data) {
-    const response = await fetch(`${API_BASE}/users/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-}
-
-// ==== TODO OPERATIONS ====
-export async function fetchUserTodos(userId) {
-    await authenticate(userId)
-    const response = await fetch(`${API_BASE}/todos?userId=${userId}`)
-    return handleResponse(response)
-}
-
-export async function createTodo(userId, title, completed = false) {
-    await authenticate(userId)
-    const response = await fetch(`${API_BASE}/todos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, title, completed })
-    })
-    return handleResponse(response)
-}
-
-export async function updateTodo(id, data) {
-    const response = await fetch(`${API_BASE}/todos/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-}
-
-export async function deleteTodo(id) {
-    const response = await fetch(`${API_BASE}/todos/${id}`, { method: 'DELETE' })
-    if (!response.ok) {
-        throw new Error(`Failed to delete todo: ${response.status}`)
-    }
-}
-
-// ==== POST & COMMENT OPERATIONS ====
-export async function fetchUserPosts(userId) {
-    await authenticate(userId)
-    const response = await fetch(`${API_BASE}/posts?userId=${userId}`)
-    return handleResponse(response)
-}
-
-export async function fetchAllPosts() {
-    const response = await fetch(`${API_BASE}/posts`)
-    return handleResponse(response)
-}
-
-export async function createPost(userId, title, body) {
-    await authenticate(userId)
-    const response = await fetch(`${API_BASE}/posts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, title, body })
-    })
-    return handleResponse(response)
-}
-
-export async function updatePost(id, data) {
-    const response = await fetch(`${API_BASE}/posts/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-}
-
-// Remove post and all related comments
-export async function deletePost(id) {
-    try {
-        // Get all comments for this post
-        const commentsResponse = await fetch(`${API_BASE}/comments?postId=${id}`)
-        const comments = await handleResponse(commentsResponse)
-
-        // Delete all comments in parallel
-        await Promise.all(
-            comments.map(comment =>
-                fetch(`${API_BASE}/comments/${comment.id}`, { method: 'DELETE' })
-            )
-        )
-
-        // Delete the post
-        const response = await fetch(`${API_BASE}/posts/${id}`, { method: 'DELETE' })
-        if (!response.ok) {
-            throw new Error(`Failed to delete post: ${response.status}`)
+class ApiService {
+    // Generic request method
+    async request(endpoint, options = {}) {
+        const url = `${API_BASE_URL}${endpoint}`
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            ...options,
         }
-    } catch (error) {
-        throw new Error(`Failed to delete post and comments: ${error.message}`)
-    }
-}
 
-export async function fetchPostComments(postId) {
-    const response = await fetch(`${API_BASE}/comments?postId=${postId}`)
-    return handleResponse(response)
-}
-
-export async function createComment(comment) {
-    const response = await fetch(`${API_BASE}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(comment)
-    })
-    return handleResponse(response)
-}
-
-export async function updateComment(id, data) {
-    const response = await fetch(`${API_BASE}/comments/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-}
-
-export async function deleteComment(id) {
-    const response = await fetch(`${API_BASE}/comments/${id}`, { method: 'DELETE' })
-    if (!response.ok) {
-        throw new Error(`Failed to delete comment: ${response.status}`)
-    }
-}
-
-// ==== ALBUM & PHOTO OPERATIONS ====
-export async function fetchUserAlbums(userId) {
-    await authenticate(userId)
-    const response = await fetch(`${API_BASE}/albums?userId=${userId}`)
-    return handleResponse(response)
-}
-
-export async function createAlbum(userId, title) {
-    await authenticate(userId)
-    const response = await fetch(`${API_BASE}/albums`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, title })
-    })
-    return handleResponse(response)
-}
-
-export async function updateAlbum(id, data) {
-    const response = await fetch(`${API_BASE}/albums/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-}
-
-// Remove album and all related photos
-export async function deleteAlbum(id) {
-    try {
-        // Get all photos in this album
-        const photosResponse = await fetch(`${API_BASE}/photos?albumId=${id}`)
-        const photos = await handleResponse(photosResponse)
-
-        // Delete all photos in parallel
-        await Promise.all(
-            photos.map(photo =>
-                fetch(`${API_BASE}/photos/${photo.id}`, { method: 'DELETE' })
-            )
-        )
-
-        // Delete the album
-        const response = await fetch(`${API_BASE}/albums/${id}`, { method: 'DELETE' })
-        if (!response.ok) {
-            throw new Error(`Failed to delete album: ${response.status}`)
+        try {
+            const response = await fetch(url, config)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            return await response.json()
+        } catch (error) {
+            console.error('API request failed:', error)
+            throw error
         }
-    } catch (error) {
-        throw new Error(`Failed to delete album and photos: ${error.message}`)
     }
-}
 
-export async function fetchAlbumPhotos(albumId) {
-    const response = await fetch(`${API_BASE}/photos?albumId=${albumId}`)
-    return handleResponse(response)
-}
+    // User methods
+    async getUsers() {
+        return this.request('/users')
+    }
 
-export async function createPhoto(albumId, title, url, thumbnailUrl) {
-    const response = await fetch(`${API_BASE}/photos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            albumId,
-            title,
-            url,
-            thumbnailUrl
+    async getUserById(id) {
+        return this.request(`/users/${id}`)
+    }
+
+    async createUser(user) {
+        return this.request('/users', {
+            method: 'POST',
+            body: JSON.stringify(user),
         })
-    })
-    return handleResponse(response)
-}
+    }
 
-export async function updatePhoto(id, data) {
-    const response = await fetch(`${API_BASE}/photos/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-}
+    // Todo methods
+    async getTodos(userId = null) {
+        const endpoint = userId ? `/todos?userId=${userId}` : '/todos'
+        return this.request(endpoint)
+    }
 
-export async function deletePhoto(id) {
-    const response = await fetch(`${API_BASE}/photos/${id}`, { method: 'DELETE' })
-    if (!response.ok) {
-        throw new Error(`Failed to delete photo: ${response.status}`)
+    async createTodo(todo) {
+        return this.request('/todos', {
+            method: 'POST',
+            body: JSON.stringify(todo),
+        })
+    }
+
+    async updateTodo(id, todo) {
+        return this.request(`/todos/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(todo),
+        })
+    }
+
+    async deleteTodo(id) {
+        return this.request(`/todos/${id}`, {
+            method: 'DELETE',
+        })
+    }
+
+    // Post methods
+    async getPosts(userId = null) {
+        const endpoint = userId ? `/posts?userId=${userId}` : '/posts'
+        return this.request(endpoint)
+    }
+
+    async getPostById(id) {
+        return this.request(`/posts/${id}`)
+    }
+
+    async createPost(post) {
+        return this.request('/posts', {
+            method: 'POST',
+            body: JSON.stringify(post),
+        })
+    }
+
+    async updatePost(id, post) {
+        return this.request(`/posts/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(post),
+        })
+    }
+
+    async deletePost(id) {
+        return this.request(`/posts/${id}`, {
+            method: 'DELETE',
+        })
+    }
+
+    // Comment methods
+    async getComments(postId = null) {
+        const endpoint = postId ? `/comments?postId=${postId}` : '/comments'
+        return this.request(endpoint)
+    }
+
+    async createComment(comment) {
+        return this.request('/comments', {
+            method: 'POST',
+            body: JSON.stringify(comment),
+        })
+    }
+
+    async updateComment(id, comment) {
+        return this.request(`/comments/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(comment),
+        })
+    }
+
+    async deleteComment(id) {
+        return this.request(`/comments/${id}`, {
+            method: 'DELETE',
+        })
+    }
+
+    // Album methods
+    async getAlbums(userId = null) {
+        const endpoint = userId ? `/albums?userId=${userId}` : '/albums'
+        return this.request(endpoint)
+    }
+
+    async getAlbumById(id) {
+        return this.request(`/albums/${id}`)
+    }
+
+    async createAlbum(album) {
+        return this.request('/albums', {
+            method: 'POST',
+            body: JSON.stringify(album),
+        })
+    }
+
+    async updateAlbum(id, album) {
+        return this.request(`/albums/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(album),
+        })
+    }
+
+    async deleteAlbum(id) {
+        return this.request(`/albums/${id}`, {
+            method: 'DELETE',
+        })
+    }
+
+    // Photo methods
+    async getPhotos(albumId = null) {
+        const endpoint = albumId ? `/photos?albumId=${albumId}` : '/photos'
+        return this.request(endpoint)
+    }
+
+    async createPhoto(photo) {
+        return this.request('/photos', {
+            method: 'POST',
+            body: JSON.stringify(photo),
+        })
+    }
+
+    async updatePhoto(id, photo) {
+        return this.request(`/photos/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(photo),
+        })
+    }
+
+    async deletePhoto(id) {
+        return this.request(`/photos/${id}`, {
+            method: 'DELETE',
+        })
     }
 }
+
+export const api = new ApiService()

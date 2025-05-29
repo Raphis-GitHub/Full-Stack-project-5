@@ -1,19 +1,249 @@
 {
   "users": [
     {
-      "id": "1",
-      "username": "John Doe",
-      "website": "jj@gmial.com"
+      "id": 1,
+      "name": "John Doe",
+      "username": "johndoe",
+      "email": "john@example.com",
+      "website": "john123",
+      "phone": "1-770-736-8031 x56442",
+      "address": {
+        "street": "Kulas Light",
+        "suite": "Apt. 556",
+        "city": "Gwenborough",
+        "zipcode": "92998-3874"
+      }
     },
     {
-      "id": "1748436356402",
-      "username": "hi",
-      "website": "hi"
+      "id": 2,
+      "name": "Jane Smith",
+      "username": "janesmith",
+      "email": "jane@example.com",
+      "website": "jane456",
+      "phone": "010-692-6593 x09125",
+      "address": {
+        "street": "Victor Plains",
+        "suite": "Suite 879",
+        "city": "Wisokyburgh",
+        "zipcode": "90566-7771"
+      }
     },
     {
-      "id": "8fb2",
-      "username": "hihi",
-      "password": "hihi"
+      "id": 3,
+      "name": "Bob Wilson",
+      "username": "bobwilson",
+      "email": "bob@example.com",
+      "website": "bob789",
+      "phone": "1-463-123-4447",
+      "address": {
+        "street": "Douglas Extension",
+        "suite": "Suite 847",
+        "city": "McKenziehaven",
+        "zipcode": "59590-4157"
+      }
+    }
+  ],
+  "todos": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "Complete project documentation",
+      "completed": false
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "Review code changes",
+      "completed": true
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "title": "Prepare presentation slides",
+      "completed": false
+    },
+    {
+      "id": 4,
+      "userId": 2,
+      "title": "Update user interface",
+      "completed": false
+    },
+    {
+      "id": 5,
+      "userId": 2,
+      "title": "Test new features",
+      "completed": true
+    },
+    {
+      "id": 6,
+      "userId": 3,
+      "title": "Fix bug in authentication",
+      "completed": false
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "Introduction to React Hooks",
+      "body": "React Hooks allow you to use state and other React features without writing a class component. They were introduced in React 16.8 and have revolutionized how we write React applications."
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "Understanding REST APIs",
+      "body": "REST (Representational State Transfer) is an architectural style for designing networked applications. It relies on a stateless, client-server communication protocol."
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "CSS Grid vs Flexbox",
+      "body": "Both CSS Grid and Flexbox are powerful layout systems in CSS. While Flexbox is one-dimensional, CSS Grid is two-dimensional, making it ideal for complex layouts."
+    },
+    {
+      "id": 4,
+      "userId": 2,
+      "title": "JavaScript ES6 Features",
+      "body": "ES6 introduced many new features including arrow functions, template literals, destructuring, and modules that make JavaScript more powerful and easier to work with."
+    },
+    {
+      "id": 5,
+      "userId": 3,
+      "title": "Database Design Principles",
+      "body": "Good database design is crucial for application performance. Key principles include normalization, proper indexing, and understanding relationships between entities."
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "postId": 1,
+      "userId": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "body": "Great explanation of React Hooks! Very helpful for beginners."
+    },
+    {
+      "id": 2,
+      "postId": 1,
+      "userId": 3,
+      "name": "Bob Wilson",
+      "email": "bob@example.com",
+      "body": "I agree, Hooks have made React development much more intuitive."
+    },
+    {
+      "id": 3,
+      "postId": 2,
+      "userId": 3,
+      "name": "Bob Wilson",
+      "email": "bob@example.com",
+      "body": "Nice overview of REST APIs. Could you cover GraphQL in a future post?"
+    },
+    {
+      "id": 4,
+      "postId": 3,
+      "userId": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "body": "The Grid vs Flexbox comparison is spot on. I use both depending on the use case."
+    }
+  ],
+  "albums": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "Nature Photography"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "City Landscapes"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "title": "Travel Memories"
+    },
+    {
+      "id": 4,
+      "userId": 2,
+      "title": "Food Photography"
+    },
+    {
+      "id": 5,
+      "userId": 3,
+      "title": "Wildlife Collection"
+    }
+  ],
+  "photos": [
+    {
+      "id": 1,
+      "albumId": 1,
+      "title": "Mountain View",
+      "url": "https://picsum.photos/600/400?random=1",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=1"
+    },
+    {
+      "id": 2,
+      "albumId": 1,
+      "title": "Forest Path",
+      "url": "https://picsum.photos/600/400?random=2",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=2"
+    },
+    {
+      "id": 3,
+      "albumId": 1,
+      "title": "Sunset Lake",
+      "url": "https://picsum.photos/600/400?random=3",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=3"
+    },
+    {
+      "id": 4,
+      "albumId": 2,
+      "title": "Downtown Skyline",
+      "url": "https://picsum.photos/600/400?random=4",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=4"
+    },
+    {
+      "id": 5,
+      "albumId": 2,
+      "title": "Street Art",
+      "url": "https://picsum.photos/600/400?random=5",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=5"
+    },
+    {
+      "id": 6,
+      "albumId": 3,
+      "title": "Beach Vacation",
+      "url": "https://picsum.photos/600/400?random=6",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=6"
+    },
+    {
+      "id": 7,
+      "albumId": 3,
+      "title": "Mountain Hiking",
+      "url": "https://picsum.photos/600/400?random=7",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=7"
+    },
+    {
+      "id": 8,
+      "albumId": 4,
+      "title": "Delicious Pasta",
+      "url": "https://picsum.photos/600/400?random=8",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=8"
+    },
+    {
+      "id": 9,
+      "albumId": 5,
+      "title": "Eagle in Flight",
+      "url": "https://picsum.photos/600/400?random=9",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=9"
+    },
+    {
+      "id": 10,
+      "albumId": 5,
+      "title": "Lion Portrait",
+      "url": "https://picsum.photos/600/400?random=10",
+      "thumbnailUrl": "https://picsum.photos/150/150?random=10"
     }
   ]
 }
