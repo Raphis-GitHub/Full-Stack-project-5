@@ -1,5 +1,7 @@
+// src/pages/RegisterPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { fetchUsersByUsername, createUser } from '../services/api.js';
 
 export default function RegisterPage() {
   const [username, setUsername]     = useState('');
@@ -15,21 +17,15 @@ export default function RegisterPage() {
       setError('הסיסמאות אינן תואמות');
       return;
     }
+
     try {
-      let res = await fetch(
-        `http://localhost:3000/users?username=${encodeURIComponent(username)}`
-      );
-      let users = await res.json();
-      if (users.length) {
+      const exists = await fetchUsersByUsername(username);
+      if (exists.length) {
         setError('שם משתמש זה כבר קיים');
         return;
       }
-      res = await fetch('http://localhost:3000/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const newUser = await res.json();
+      // note: api.createUser stores password under "website"
+      const newUser = await createUser(username, password);
       localStorage.setItem('user', JSON.stringify(newUser));
       nav('/home');
     } catch {
@@ -43,24 +39,21 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit}>
         <label>Username</label>
         <input
-          type="text"
-          value={username}
+          type="text" value={username}
           onChange={e => setUsername(e.target.value)}
           required
         />
 
         <label>Password</label>
         <input
-          type="password"
-          value={password}
+          type="password" value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
 
         <label>Verify Password</label>
         <input
-          type="password"
-          value={verifyPassword}
+          type="password" value={verifyPassword}
           onChange={e => setVerify(e.target.value)}
           required
         />
@@ -71,7 +64,7 @@ export default function RegisterPage() {
       </form>
       <p>כבר רשום? <Link to="/login">התחבר כאן</Link></p>
     </div>
-    );
+  );
 }
-// This code defines a registration page using React.
-// It includes a form for entering a username and password, checks for existing users, and handles submission to create a new user account.
+// This component handles user registration.
+// It allows users to create a new account by entering a username and password.

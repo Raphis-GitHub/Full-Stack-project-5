@@ -1,5 +1,7 @@
+// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { fetchUsersByUsername } from '../services/api.js';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -11,18 +13,17 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     try {
-      const res = await fetch(
-        `http://localhost:3000/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-      );
-      const users = await res.json();
-      if (users.length === 1) {
-        localStorage.setItem('user', JSON.stringify(users[0]));
+      const users = await fetchUsersByUsername(username);
+      // api.js stores password under "website"
+      const match = users.find(u => u.website === password);
+      if (match) {
+        localStorage.setItem('user', JSON.stringify(match));
         nav('/home');
       } else {
         setError('שם משתמש או סיסמה שגויים');
       }
     } catch {
-      setError('בעיה ברשת, נסה שוב');
+      setError('בעיה בשרת, נסה שוב');
     }
   }
 
@@ -32,16 +33,14 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit}>
         <label>Username</label>
         <input
-          type="text"
-          value={username}
+          type="text" value={username}
           onChange={e => setUsername(e.target.value)}
           required
         />
 
         <label>Password</label>
         <input
-          type="password"
-          value={password}
+          type="password" value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
@@ -54,5 +53,3 @@ export default function LoginPage() {
     </div>
   );
 }
-// This code defines a simple login page using React.
-// It includes a form for entering a username and password, and handles submission by checking the credentials against a mock API.
